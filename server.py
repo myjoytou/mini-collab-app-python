@@ -35,7 +35,7 @@ class DbHandler:
         log.msg('=======================posting')
         log.msg('data is: {} '.format(data))
         resp = self.get();
-        if resp['docs']:
+        if resp and resp['docs']:
             if not self.collection:
                 self.collection = self.db.collab_document
             self.collection.update_one({'username': 'test_user'}, {'$set': {'docs': data}})
@@ -87,10 +87,11 @@ class ChatCommunicateFactory(WebSocketServerFactory):
 
     def populateResult(self):
         response = self.handler.get()
-        log.msg('==================Posting somehitn: {}'.format(response['docs']))
-        if response['docs']:
-            return response['docs']
-        return False
+        if response:
+            log.msg('==================Posting somehitn: {}'.format(response['docs']))
+            if response['docs']:
+                return response['docs']
+            return False
 
     def register(self, client):
         self.clients[client.peer] = {"object": client, "partner": None}
